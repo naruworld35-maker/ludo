@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ludo for Android: play with a friend online</title>
+<meta name="description" content="Play Ludo with a friend on another phone. Roll online, talk on voice chat and listen to the same song while you play. Free APK for Android.">
+<meta name="theme-color" content="#FFC21A">
+<meta property="og:title" content="Ludo for Android">
+<meta property="og:description" content="Play Ludo with a friend on another phone. Voice chat and shared music included.">
+<link rel="icon" href="./icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Hind:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --haldi: #FFC21A;
+    --ink: #3B2008;
+    --ink-soft: #6B4A2B;
+    --page: #FFFDF8;
+    --yard: #FFF6DD;
+    --red: #E23B2E;
+    --green: #2DAA4F;
+    --blue: #1C7ED6;
+    --gold: #F2A900;
+    --go: #17893A;
+    --go-deep: #0E5F26;
+    --display: "Baloo 2", "Hind", system-ui, sans-serif;
+    --body: "Hind", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 400 1.0625rem/1.6 var(--body);
+  }
+  img { display: block; max-width: 100%; height: auto; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; border-radius: 6px; }
+
+  .wrap { width: min(100% - 40px, 1080px); margin-inline: auto; }
+
+  /* ---------- hero ---------- */
+  .hero { background: var(--haldi); padding-top: 28px; overflow: hidden; }
+  .hero-grid { display: grid; gap: 28px; align-items: end; }
+  .hero-copy { padding-bottom: 4px; }
+  .brand { width: 112px; height: auto; margin-bottom: 14px; }
+  h1 {
+    margin: 0 0 14px;
+    font: 800 clamp(2.5rem, 10.5vw, 4.4rem)/1 var(--display);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  .lede { margin: 0 0 24px; max-width: 34ch; font-size: 1.2rem; font-weight: 500; }
+
+  .btn-dl {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 15px 26px 13px;
+    background: var(--go); color: #fff; text-decoration: none;
+    font: 800 1.3rem/1 var(--display);
+    border-radius: 20px;
+    box-shadow: 0 5px 0 var(--go-deep);
+    transition: transform .08s ease, box-shadow .08s ease;
+  }
+  .btn-dl:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--go-deep); }
+  .btn-dl svg { width: 24px; height: 24px; flex: none; }
+  .fine { margin: 14px 0 0; font-size: .95rem; color: var(--ink); opacity: .8; }
+
+  /* phone + dice: the dice sits on the phone like it was just thrown */
+  .stage { position: relative; justify-self: center; width: min(300px, 74vw); margin-top: 8px; }
+  .phone {
+    height: 480px; overflow: hidden;
+    border: 10px solid var(--ink); border-bottom: 0;
+    border-radius: 42px 42px 0 0;
+    background: #fde2a8;
+  }
+  .phone img { width: 100%; }
+  .dice {
+    position: absolute; top: -26px; right: -34px; z-index: 2;
+    width: 112px; padding: 0; border: 0; background: none; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    filter: drop-shadow(0 8px 6px rgba(59, 32, 8, .28));
+  }
+  .dice img { width: 112px; height: 112px; transition: transform .07s linear; }
+  .dice-note {
+    position: absolute; top: 94px; right: -34px; z-index: 2; width: 112px;
+    margin: 0; text-align: center;
+    font: 600 .86rem/1.2 var(--body);
+    background: var(--ink); color: #fff; border-radius: 12px; padding: 5px 8px;
+  }
+
+  /* ---------- features ---------- */
+  section { padding: 56px 0; }
+  h2 {
+    margin: 0 0 24px;
+    font: 800 clamp(1.9rem, 6.4vw, 2.7rem)/1.08 var(--display);
+    text-wrap: balance;
+  }
+  .seats { display: grid; gap: 18px; }
+  .seat { background: var(--c); padding: 10px; border-radius: 30px; }
+  .yard { position: relative; background: var(--yard); border-radius: 21px; padding: 20px 22px 24px; height: 100%; }
+  .yard::after {            /* four tokens waiting in the yard */
+    content: ""; position: absolute; top: 20px; right: 46px;
+    width: 13px; height: 13px; border-radius: 50%; background: var(--c);
+    box-shadow: 22px 0 var(--c), 0 22px var(--c), 22px 22px var(--c);
+  }
+  .seat h3 { margin: 0 70px 8px 0; font: 800 1.5rem/1.1 var(--display); }
+  .seat p { margin: 0; max-width: 46ch; }
+  .red { --c: var(--red); } .green { --c: var(--green); } .gold { --c: var(--gold); } .blue { --c: var(--blue); }
+  .more { margin: 28px 0 0; font-size: 1.05rem; max-width: 52ch; }
+
+  /* ---------- how-to ---------- */
+  .howto { background: #FFF1C9; }
+  .howto-grid { display: grid; gap: 44px; }
+  .howto h2 { margin-bottom: 18px; }
+  ol.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; display: grid; gap: 14px; }
+  ol.steps li { counter-increment: step; position: relative; padding-left: 52px; min-height: 38px; }
+  ol.steps li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: -2px;
+    width: 38px; height: 38px; border-radius: 50%;
+    display: grid; place-items: center;
+    background: var(--ink); color: var(--haldi);
+    font: 800 1.2rem/1 var(--display);
+  }
+  .note { margin: 20px 0 0; padding: 14px 16px; border-left: 6px solid var(--blue); background: #fff; border-radius: 4px 14px 14px 4px; max-width: 46ch; }
+
+  /* ---------- footer ---------- */
+  footer { background: var(--ink); color: #FFF3D6; padding: 52px 0 40px; }
+  footer h2 { color: #fff; margin-bottom: 18px; }
+  footer .fine { color: #FFF3D6; opacity: .85; }
+  .share { display: inline-block; margin-top: 22px; font-weight: 600; }
+  .credit { margin: 36px 0 0; font-size: .95rem; opacity: .8; }
+
+  /* ---------- wider screens ---------- */
+  @media (min-width: 700px) {
+    .seats { grid-template-columns: 1fr 1fr; }
+    .howto-grid { grid-template-columns: 1fr 1fr; gap: 56px; }
+  }
+  @media (min-width: 900px) {
+    .hero { padding-top: 48px; }
+    .hero-grid { grid-template-columns: 1.15fr .85fr; gap: 48px; }
+    .hero-copy { padding-bottom: 64px; }
+    .brand { width: 132px; margin-bottom: 20px; }
+    .stage { width: 320px; justify-self: end; margin-right: 24px; }
+    .phone { height: 520px; }
+    section { padding: 84px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-dl, .dice img { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <img class="brand" src="./logo_splash.webp" alt="Ludo" width="132" height="122">
+      <h1>Play Ludo with a friend on another phone</h1>
+      <p class="lede">Roll online, talk on voice chat, and listen to the same song while you play.</p>
+      <a class="btn-dl" href="ludo.apk" download>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 20h14"/></svg>
+        Download for Android
+      </a>
+      <p class="fine">Version 1.0. Needs Android 5.0 or newer.</p>
+    </div>
+
+    <div class="stage">
+      <button class="dice" id="dice" type="button" aria-label="Roll the dice">
+        <img id="diceImg" src="./dice_face_6.webp" alt="" width="112" height="112">
+      </button>
+      <p class="dice-note" id="diceNote" role="status" aria-live="polite">Tap the dice</p>
+      <div class="phone">
+        <img src="./screen_home.webp" alt="The Ludo home screen with Computer, Local and Play Online buttons" width="600" height="1338">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="wrap">
+      <h2>Made for playing with friends</h2>
+      <div class="seats">
+        <article class="seat red"><div class="yard">
+          <h3>Play online</h3>
+          <p>Create a room, send your friend a short code on WhatsApp, and you are in. No sign-up and no account.</p>
+        </div></article>
+
+        <article class="seat green"><div class="yard">
+          <h3>Talk while you play</h3>
+          <p>Voice chat is built in. Your mic starts muted, so nobody hears you by accident. Tap it when you want to talk.</p>
+        </div></article>
+
+        <article class="seat gold"><div class="yard">
+          <h3>Play a song together</h3>
+          <p>Pick a song from your phone and it plays on both phones at the same time. Whoever started it controls it, and your friend can mute it. Songs up to 30 MB.</p>
+        </div></article>
+
+        <article class="seat blue"><div class="yard">
+          <h3>Team up, 2 vs 2</h3>
+          <p>Team Up mode puts you and a partner against two others. When all your tokens are home, you keep rolling and move your partner's tokens.</p>
+        </div></article>
+      </div>
+      <p class="more">No friend around? Play against the computer, or pass one phone around.</p>
+    </div>
+  </section>
+
+  <section class="howto">
+    <div class="wrap howto-grid">
+      <div>
+        <h2>Install the app</h2>
+        <ol class="steps">
+          <li>Tap <strong>Download for Android</strong>.</li>
+          <li>Open the downloaded file.</li>
+          <li>If Android asks, allow installs from your browser or file manager.</li>
+          <li>Open Ludo and tap <strong>Play Online</strong>.</li>
+        </ol>
+      </div>
+      <div>
+        <h2>Connect with a friend</h2>
+        <ol class="steps">
+          <li><strong>Host:</strong> tap Create Room and send the code to your friend on WhatsApp.</li>
+          <li><strong>Friend:</strong> tap Join Room, paste the code, and send the reply code back.</li>
+          <li><strong>Host:</strong> paste the reply code. The game starts.</li>
+        </ol>
+        <p class="note">If the internet drops mid-game, the game pauses and waits up to 45 seconds for your friend to come back.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <h2>Ready to roll?</h2>
+    <a class="btn-dl" href="ludo.apk" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 20h14"/></svg>
+      Download for Android
+    </a>
+    <p class="fine">Version 1.0. Needs Android 5.0 or newer.</p>
+    <a class="share" id="share" href="https://wa.me/">Send this page to a friend on WhatsApp</a>
+    <p class="credit">Made with love in India by Naru.</p>
+  </div>
+</footer>
+
+<script>
+/* ===== Yahan sirf ye 3 cheezein bharo, baaki sab apne aap ho jayega =====
+   user       : tumhara GitHub username
+   repo       : jis repo me Releases me ludo.apk daali hai (wahi repo jahan ye page hai)
+   goatcounter: goatcounter.com pe banaya hua site code (jaise "ludo" -> ludo.goatcounter.com). Na ho to khali chhodo. */
+var LUDO = { user: "naruworld35-maker", repo: "ludo", goatcounter: "" };
+
+(function () {
+  var ready = LUDO.user.indexOf("YOUR_") !== 0 && LUDO.repo.indexOf("YOUR_") !== 0;
+  var base = "https://github.com/" + LUDO.user + "/" + LUDO.repo;
+
+  // Download buttons -> latest GitHub Release (GitHub itself counts every download of that file)
+  var btns = document.querySelectorAll(".btn-dl");
+  for (var i = 0; i < btns.length; i++) {
+    if (ready) btns[i].href = base + "/releases/latest/download/ludo.apk";
+    btns[i].addEventListener("click", function () {
+      try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: "download-apk", title: "APK download click", event: true }); } catch (e) {}
+    });
+  }
+
+  // Visitors + button clicks (GoatCounter: free, no cookies)
+  if (LUDO.goatcounter) {
+    var gc = document.createElement("script");
+    gc.async = true;
+    gc.src = "//gc.zgo.at/count.js";
+    gc.setAttribute("data-goatcounter", "https://" + LUDO.goatcounter + ".goatcounter.com/count");
+    document.head.appendChild(gc);
+  }
+
+  // Live total next to "Version 1.0" (sum of download_count of ludo.apk over all releases). Hidden if it fails.
+  if (ready && window.fetch) {
+    fetch("https://api.github.com/repos/" + LUDO.user + "/" + LUDO.repo + "/releases?per_page=100")
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (list) {
+        var total = 0;
+        for (var a = 0; a < list.length; a++) {
+          var assets = list[a].assets || [];
+          for (var b = 0; b < assets.length; b++) if (/\.apk$/i.test(assets[b].name)) total += assets[b].download_count || 0;
+        }
+        if (total < 1) return;
+        var fines = document.querySelectorAll(".fine");
+        for (var k = 0; k < fines.length; k++) {
+          if (fines[k].textContent.indexOf("Version") > -1) fines[k].textContent += "  \u00b7  " + total.toLocaleString() + " downloads";
+        }
+      })
+      .catch(function () {});
+  }
+})();
+</script>
+<script>
+(function () {
+  var img = document.getElementById('diceImg');
+  var btn = document.getElementById('dice');
+  var note = document.getElementById('diceNote');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var faces = [1, 2, 3, 4, 5, 6].map(function (n) { return './dice_face_' + n + '.webp'; });
+  var tumble = [1, 2, 3, 4].map(function (n) { return './dice_roll_' + n + '.webp'; });
+  faces.concat(tumble).forEach(function (src) { new Image().src = src; });
+
+  var rolling = false;
+  function jitter(n) { return (Math.random() - 0.5) * n; }
+
+  function land() {
+    var n = 1 + Math.floor(Math.random() * 6);
+    img.src = faces[n - 1];
+    img.style.transform = '';
+    note.textContent = n === 6 ? 'You rolled a 6. Roll again!' : 'You rolled a ' + n;
+    rolling = false;
+  }
+
+  function roll() {
+    if (rolling) return;
+    rolling = true;
+    note.textContent = 'Rolling';
+    if (reduce) { land(); return; }
+    var tick = setInterval(function () {
+      img.src = tumble[Math.floor(Math.random() * tumble.length)];
+      img.style.transform = 'translate(' + jitter(10) + 'px,' + jitter(10) + 'px) rotate(' + jitter(50) + 'deg)';
+    }, 75);
+    setTimeout(function () { clearInterval(tick); land(); }, 850);
+  }
+
+  btn.addEventListener('click', roll);
+  if (!reduce) setTimeout(roll, 900);   // one roll on load to show it is a real dice
+
+  var share = document.getElementById('share');
+  share.href = 'https://wa.me/?text=' + encodeURIComponent('Play Ludo with me on your phone: ' + location.href);
+})();
+</script>
+</body>
+</html>
